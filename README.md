@@ -1,173 +1,143 @@
-# 🗄️ SisGESC – Sistema de Gestão Escolar (Banco de Dados)
-
-Projeto acadêmico de **modelagem de banco de dados relacional**, desenvolvido com foco em **estruturação, normalização e integração de dados** para um sistema de gestão escolar completo.
-
----
-
-## 📌 Objetivo
-
-O SisGESC foi projetado para representar a estrutura de um sistema escolar que atende do **Ensino Fundamental II ao Ensino Médio**, contemplando:
-
-* Gestão acadêmica
-* Gestão financeira
-* Gestão de recursos humanos
-
-O objetivo principal é garantir **integridade, consistência e rastreabilidade dos dados** em todos os processos da instituição. 
+# SisGESC — Sistema de Gestão Escolar
+**Grupo MedioFund** | Projeto ERP Escolar — Prof. Clóvis  
+Disciplina: Banco de Dados | Entrega Final
 
 ---
 
-## 🧱 Arquitetura do Sistema
+## Sobre o Projeto
 
-O banco foi modelado seguindo o padrão **relacional (RDBMS)**, utilizando:
-
-* Chaves primárias (PK)
-* Chaves estrangeiras (FK)
-* Normalização até a **3ª Forma Normal (3FN)** 
-
-A estrutura é dividida em **3 módulos principais**:
-
-### 🎓 Acadêmico
-
-* Alunos, turmas, disciplinas
-* Matrículas, avaliações, notas
-* Frequência e atestados
-
-### 💰 Financeiro
-
-* Contratos escolares
-* Mensalidades e pagamentos
-* Receitas e despesas
-
-### 🧑‍💼 Recursos Humanos (RH)
-
-* Funcionários
-* Vínculos e cargos
-* Férias e folha de pagamento
+O **SisGESC** é um sistema de gestão escolar desenvolvido em MySQL, cobrindo os módulos **Acadêmico**, **Financeiro** e **RH**. O projeto contempla desde a modelagem relacional (OLTP) até a camada analítica (OLAP/Star Schema), com processo ETL, validação de integridade e otimização de performance.
 
 ---
 
-## 🔗 Integração entre módulos
+## Estrutura do Repositório
 
-O sistema foi projetado com rastreabilidade completa:
-
-```text
-Aluno → Matrícula → Turma → Disciplina → Professor → Contrato → Mensalidade → Pagamento
 ```
-
-Isso permite acompanhar todo o ciclo do aluno, desde o cadastro até o pagamento das mensalidades. 
-
----
-
-## 🧠 Modelagem e decisões técnicas
-
-### ✔ Normalização
-
-* Aplicação das **1FN, 2FN e 3FN**
-* Eliminação de redundâncias
-* Separação de entidades para evitar dependências transitivas 
-
-### ✔ Relacionamentos
-
-* Uso de tabelas associativas para relações N:N:
-
-  * aluno ↔ responsável
-  * turma ↔ disciplina
-  * aluno ↔ avaliação 
-
-### ✔ Integridade referencial
-
-* Uso de chaves estrangeiras para garantir consistência
-* Nenhum dado existe sem suas dependências 
-
----
-
-## ⚙️ Funcionalidades modeladas
-
-O banco suporta funcionalidades como:
-
-* Cadastro completo de alunos e responsáveis
-* Matrículas em turmas e disciplinas
-* Registro de notas e frequência
-* Geração automática de mensalidades
-* Controle de pagamentos
-* Gestão de funcionários e folha salarial
-
-Além disso, foram utilizados **triggers** para automações como:
-
-* Geração de mensalidades
-* Aplicação de bolsas
-* Cálculo de juros e multas 
-
----
-
-## 📊 Estrutura do Banco
-
-* Total de tabelas: **22**
-* Uso de ENUMs para padronização de dados
-* Campos de auditoria (`data_cadastro`)
-* Separação entre dados operacionais e históricos 
-
----
-
-## 📈 Aplicações futuras (BI e IA)
-
-O banco foi estruturado para análises como:
-
-* 📉 Previsão de inadimplência
-* 🎓 Previsão de evasão escolar
-* 📊 Análise de comportamento financeiro e acadêmico 
-
----
-
-## 📷 DER (Diagrama Entidade-Relacionamento)
-
-O DER completo do sistema está disponível em:
-
-📄 `DER/der-sisgesc.pdf`
-
----
-
-## 🛠️ Como executar
-
-1. Abra o MySQL Workbench (ou outro SGBD compatível)
-2. Execute o script:
-
-```sql
-schema-mysql.sql
-```
-
-3. O banco será criado automaticamente com todas as tabelas e relacionamentos
-
----
-
-## 📁 Estrutura do repositório
-
-```text
-SisGESC/
+SisGESC_MedioFund/
 │
-├── DER/
-│   └── der-sisgesc.pdf
+├── README.md                        ← este arquivo
 │
-├── SQL/
-│   └── schema-mysql.sql
+├── run_all.sql                      ← executa todos os scripts em ordem
 │
-├── Documentacao/
-│   └── documentacao-banco.pdf
+├── Script/
+│   ├── script_criacao.sql                   ← criação das tabelas (DDL) — módulos Acadêmico, Financeiro, RH
+│   ├── Script-1_carga_dados.sql                   ← carga de dados operacionais (idempotente)
+│   ├── Script-2_oltp_consultas.sql         ← consultas OLTP: SELECTs simples e subselects
+│   ├── Script-3_olap_etl.sql              ← Star Schema + processo ETL
+│   ├── Script-4_performance_governanca.sql ← índices, EXPLAIN e validação SUM(OLTP) = SUM(OLAP)
+│   └── run_all.sql                 ← executa todos os scripts em ordem
 │
-└── README.md
+└── Docs/
+    ├── DER-MedioFund-3.0.pdf  ← Diagrama Entidade-Relacionamento (OLTP + OLAP)
+    └── SisGESC_DER_MedioFund 4.1.pdf   ← documentação completa: dicionário de dados, prints OLTP e OLAP
 ```
 
 ---
 
-## 📌 Observação
+## Como Executar
 
-Este projeto tem foco em **engenharia de dados e modelagem relacional**, não incluindo camada de aplicação (backend/frontend).
+### Pré-requisitos
+
+- MySQL 8.0 ou superior
+- MySQL Workbench ou cliente de linha de comando (`mysql`)
+
+### Execução Completa (recomendado)
+
+Para instalar todo o sistema de uma vez, execute o script único:
+
+```bash
+mysql -u seu_usuario -p < run_all.sql
+```
+
+Ou, no MySQL Workbench, abra o arquivo `run_all.sql` e execute (`Ctrl+Shift+Enter`).
+
+O `run_all.sql` chama os scripts na seguinte ordem:
+
+| Ordem | Script | O que faz |
+|-------|--------|-----------|
+| 1 | `01_ddl.sql` | Cria o banco e todas as tabelas com PK e FK |
+| 2 | `02_dml.sql` | Insere os dados operacionais |
+| 3 | `03_oltp_queries.sql` | Executa as consultas OLTP |
+| 4 | `04_olap_etl.sql` | Cria o Star Schema e executa o ETL |
+| 5 | `05_performance_governanca.sql` | Cria índices, roda EXPLAINs e valida SUM(OLTP) = SUM(OLAP) |
+| 6 | `06_reset.sql` | (opcional) Reseta o banco com DROP/TRUNCATE |
+
+### Execução Individual
+
+Caso queira rodar apenas uma fase:
+
+```bash
+mysql -u seu_usuario -p < Scripts/01_ddl.sql
+```
+
+### Reset do Banco
+
+Para zerar tudo e recomeçar do zero:
+
+```bash
+mysql -u seu_usuario -p < Scripts/06_reset.sql
+```
 
 ---
 
-## 🚀 Próximos passos
+## Validações Importantes
 
-* Integração com aplicação Java (CRUD)
-* Criação de API para acesso ao banco
-* Dashboard analítico (BI)
-* Interface gráfica para usuários
+### Idempotência da Carga (Fase 2)
+
+O script `02_dml.sql` é **idempotente**: executá-lo mais de uma vez não duplica registros. Para confirmar, rode o `SELECT COUNT(*)` antes e depois da segunda execução — os totais devem ser idênticos.
+
+### Consistência OLTP → OLAP (Fase 5)
+
+O script `05_performance_governanca.sql` inclui uma query de validação que prova:
+
+```
+SUM(valores no OLTP) = SUM(valores no OLAP)
+```
+
+Se os valores divergirem, o ETL possui falha de integridade.
+
+---
+
+## Módulos do Sistema
+
+| Módulo | Descrição |
+|--------|-----------|
+| **Acadêmico** | Alunos, matrículas, cursos, turmas, notas e frequência |
+| **Financeiro** | Mensalidades, pagamentos e inadimplência |
+| **RH** | Professores, funcionários e vínculos |
+
+---
+
+## Modelagem OLAP — Star Schema
+
+A camada analítica segue o modelo **Star Schema** com:
+
+- **Tabela Fato:** `fato_matriculas` (ou equivalente definida no projeto)
+- **Dimensões:** `dim_tempo`, `dim_aluno`, `dim_curso`, `dim_unidade`
+- **Surrogate Keys** em todas as dimensões
+- **Granularidade:** definida por matrícula × período
+
+---
+
+## Documentação
+
+Toda a documentação técnica está em `Docs/`:
+
+- **DER 4.0** (`SisGESC_MediFund_DER.4.0.pdf`) — diagrama atualizado com estrutura OLTP e OLAP
+- **Documento do Projeto** (`Documento_Projeto.pdf`) — dicionário de dados completo, prints das queries OLTP e OLAP, e demais evidências
+
+---
+
+## Padrões Adotados
+
+- Nomenclatura: `snake_case` em todos os objetos do banco
+- Scripts comentados por seção
+- Versionamento: histórico de commits com evolução desde a Entrega 1
+- Correções da 1ª entrega aplicadas nesta versão final
+
+---
+
+## Grupo MedioFund
+
+Projeto desenvolvido para a disciplina de Banco de Dados.  
+Entrega Final — SisGESC ERP Escolar.
